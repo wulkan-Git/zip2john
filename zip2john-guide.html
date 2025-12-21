@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Руководство по использованию zip2john | John the Ripper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .guide-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header {
+            border-bottom: 3px solid #4a6ee0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        h2 {
+            color: #3498db;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4a6ee0;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .code-block {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 18px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .command {
+            color: #1abc9c;
+            font-weight: bold;
+        }
+
+        .comment {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .path {
+            color: #e74c3c;
+        }
+
+        .note {
+            background-color: #fffde7;
+            border: 1px solid #ffeb3b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .note-title {
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .step {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ecf0f1;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .example-container {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .example-title {
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .github-link {
+            display: inline-block;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .github-link:hover {
+            background-color: #555;
+        }
+
+        .copy-btn {
+            background-color: #4a6ee0;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #3a5ed0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .guide-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .code-block {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="header">
+            <h1>Руководство по использованию zip2john</h1>
+            <p class="subtitle">Извлечение хешей из ZIP-архивов для John the Ripper</p>
+        </div>
+
+        <div class="highlight-box">
+            <p><strong>zip2john</strong> — утилита для извлечения хешей из защищённых паролем ZIP-архивов, которые затем можно взломать с помощью <strong>John the Ripper</strong>.</p>
+        </div>
+
+        <h2>Содержание</h2>
+        <ul>
+            <li><a href="#installation">Установка John the Ripper</a></li>
+            <li><a href="#basic-usage">Базовое использование</a></li>
+            <li><a href="#extract-hash">Извлечение хеша</a></li>
+            <li><a href="#cracking">Взлом пароля</a></li>
+            <li><a href="#examples">Примеры использования</a></li>
+            <li><a href="#notes">Важные примечания</a></li>
+        </ul>
+
+        <div id="installation" class="step">
+            <h2>1. Установка John the Ripper</h2>
+            <p>Перед использованием zip2john необходимо установить John the Ripper:</p>
+            
+            <h3>Для Linux (Debian/Ubuntu):</h3>
+            <div class="code-block">
+                <span class="command">sudo apt update</span><br>
+                <span class="command">sudo apt install john</span>
+            </div>
+            
+            <h3>Для macOS (с использованием Homebrew):</h3>
+            <div class="code-block">
+                <span class="command">brew install john</span>
+            </div>
+            
+            <h3>Для Windows:</h3>
+            <p>Скачайте официальную сборку с <a href="https://www.openwall.com/john/" target="_blank">openwall.com/john</a> или используйте WSL.</p>
+        </div>
+
+        <div id="basic-usage" class="step">
+            <h2>2. Базовое использование zip2john</h2>
+            <p>Основной синтаксис команды:</p>
+            <div class="code-block">
+                <span class="command">zip2john</span> [опции] <span class="path">файл.zip</span> > <span class="path">выходной_файл.hash</span>
+            </div>
+            
+            <p>После установки zip2john обычно доступен как часть пакета John the Ripper.</p>
+        </div>
+
+        <div id="extract-hash" class="step">
+            <h2>3. Извлечение хеша из ZIP-архива</h2>
+            <p>Чтобы извлечь хеш пароля из защищённого ZIP-архива:</p>
+            
+            <div class="code-block">
+                <span class="comment"># Извлечь хеш и сохранить в файл hash.txt</span><br>
+                <span class="command">zip2john</span> <span class="path">protected.zip</span> > <span class="path">hash.txt</span>
+            </div>
+            
+            <p>Или сразу вывести на экран:</p>
+            <div class="code-block">
+                <span class="command">zip2john</span> <span class="path">protected.zip</span>
+            </div>
+            
+            <div class="note">
+                <div class="note-title">Примечание:</div>
+                <p>Если команда <code>zip2john</code> не найдена, попробуйте полный путь: <code>/usr/sbin/zip2john</code> или <code>/opt/john/run/zip2john</code> в зависимости от вашей установки.</p>
+            </div>
+        </div>
+
+        <div id="cracking" class="step">
+            <h2>4. Взлом пароля с помощью John the Ripper</h2>
+            <p>После извлечения хеша используйте John для его взлома:</p>
+            
+            <div class="code-block">
+                <span class="comment"># Стандартный перебор</span><br>
+                <span class="command">john</span> <span class="path">hash.txt</span>
+            </div>
+            
+            <div class="code-block">
+                <span class="comment"># Использование словаря</span><br>
+                <span class="command">john</span> --wordlist=<span class="path">/usr/share/wordlists/rockyou.txt</span> <span class="path">hash.txt</span>
+            </div>
+            
+            <div class="code-block">
+                <span class="comment"># Показать найденные пароли</span><br>
+                <span class="command">john</span> --show <span class="path">hash.txt</span>
+            </div>
+        </div>
+
+        <div id="examples" class="step">
+            <h2>5. Примеры использования</h2>
+            
+            <div class="example-container">
+                <div class="example-title">Пример 1: Полный процесс</div>
+                <div class="code-block">
+                    <span class="comment"># Шаг 1: Извлечь хеш из архива secret.zip</span><br>
+                    <span class="command">zip2john</span> <span class="path">secret.zip</span> > <span class="path">zip_hash.txt</span><br><br>
+                    
+                    <span class="comment"># Шаг 2: Запустить взлом с использованием словаря</span><br>
+                    <span class="command">john</span> --wordlist=<span class="path">passwords.txt</span> <span class="path">zip_hash.txt</span><br><br>
+                    
+                    <span class="comment"># Шаг 3: Показать результат</span><br>
+                    <span class="command">john</span> --show <span class="path">zip_hash.txt</span>
+                </div>
+            </div>
+            
+            <div class="example-container">
+                <div class="example-title">Пример 2: Извлечение хеша с подробным выводом</div>
+                <div class="code-block">
+                    <span class="command">zip2john</span> -v <span class="path">archive.zip</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="notes" class="step">
+            <h2>6. Важные примечания</h2>
+            
+            <div class="note">
+                <div class="note-title">Законность:</div>
+                <p>Используйте эти инструменты только для тестирования безопасности ваших собственных систем или с явного разрешения владельца. Не нарушайте законы.</p>
+            </div>
+            
+            <ul>
+                <li>zip2john поддерживает большинство типов шифрования ZIP, включая ZIP традиционное и AES-256.</li>
+                <li>Скорость взлома зависит от сложности пароля и вычислительной мощности.</li>
+                <li>Для сложных паролей рекомендуется использовать маски или комбинации словарей.</li>
+                <li>Убедитесь, что у вас есть права на доступ к ZIP-файлу.</li>
+            </ul>
+            
+            <h3>Полезные опции John the Ripper:</h3>
+            <div class="code-block">
+                <span class="command">john</span> --format=zip <span class="path">hash.txt</span> <span class="comment"># Принудительно указать формат</span><br>
+                <span class="command">john</span> --incremental <span class="path">hash.txt</span> <span class="comment"># Использовать инкрементальный режим</span><br>
+                <span class="command">john</span> --rules <span class="path">hash.txt</span> <span class="comment"># Применить правила к словарю</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Данное руководство создано для образовательных целей.</p>
+            <p>Подробная документация: <a href="https://www.openwall.com/john/doc/" target="_blank">https://www.openwall.com/john/doc/</a></p>
+            
+            <a href="https://github.com/" class="github-link" target="_blank">
+                ★ Поделиться на GitHub
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Функция для копирования кода
+        document.querySelectorAll('.code-block').forEach(block => {
+            // Создаем кнопку копирования для каждого блока кода
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.textContent = 'Копировать';
+            button.addEventListener('click', () => {
+                const code = block.innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = button.textContent;
+                    button.textContent = 'Скопировано!';
+                    button.style.backgroundColor = '#27ae60';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.backgroundColor = '#4a6ee0';
+                    }, 2000);
+                });
+            });
+            
+            // Вставляем кнопку в начало блока кода
+            block.style.position = 'relative';
+            block.prepend(button);
+        });
+        
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
