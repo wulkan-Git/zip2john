@@ -27,7 +27,15 @@
 - ZIP с AES-шифрованием (128/256 бит)
 
 ---
+---
+# Извлечь хеш
+zip2john secret.zip > hash.txt
 
+# Подобрать пароль
+john hash.txt
+
+# Показать результат
+john --show hash.txt
 <a id="быстрый-старт"></a>
 ## ⚡ Быстрый старт
 
@@ -35,4 +43,4 @@
 ```bash
 zip2john protected.zip > hash.txt
 
-<a id="установка"></a>
+
