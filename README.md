@@ -34,3 +34,5 @@
 ### Извлечение хеша из архива:
 ```bash
 zip2john protected.zip > hash.txt
+
+<a id="установка"></a>
