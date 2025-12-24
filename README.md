@@ -2,6 +2,7 @@
 
 Утилита для извлечения хешей из ZIP-архивов для John the Ripper
 
+[![GitHub Pages](https://img.shields.io/badge/🌐%20Демо-сайт-blue)](https://wulkan-Git.github.io/zip2john/)
 ---
 
 ## 📋 Содержание
