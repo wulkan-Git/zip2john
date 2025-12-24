@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Руководство по использованию zip2john</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: #162447;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #00adb5;
+        }
+        
+        h1 {
+            color: #00adb5;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: #00adb5;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d4059;
+        }
+        
+        h3 {
+            color: #8fd9e1;
+            margin: 20px 0 10px 0;
+        }
+        
+        .subtitle {
+            color: #8fd9e1;
+            font-size: 1.2rem;
+        }
+        
+        .note {
+            background-color: #2d4059;
+            border-left: 4px solid #f08a5d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .warning {
+            background-color: #3a2d39;
+            border-left: 4px solid #b83b5e;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .code-block {
+            background-color: #0f3460;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid #00adb5;
+        }
+        
+        code {
+            background-color: #0f3460;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #8fd9e1;
+        }
+        
+        .command {
+            color: #f08a5d;
+        }
+        
+        .file {
+            color: #8fd9e1;
+        }
+        
+        .path {
+            color: #b83b5e;
+        }
+        
+        .terminal {
+            color: #00ff9d;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        .btn {
+            background-color: #00adb5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: #008c94;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background-color: #b83b5e;
+        }
+        
+        .btn-danger:hover {
+            background-color: #9a3250;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #2d4059;
+            color: #8a8a8a;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Руководство по использованию zip2john</h1>
+        <p class="subtitle">Инструкция по извлечению хешей из ZIP-архивов для John the Ripper</p>
+    </header>
+    
+    <div class="container">
+        <div class="note">
+            <p><strong>zip2john</strong> — утилита для извлечения криптографических хешей из ZIP-архивов, которые затем могут быть взломаны с помощью John the Ripper.</p>
+        </div>
+        
+        <h2>1. Основные команды</h2>
+        
+        <h3>1.1 Базовое использование (один файл)</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">zip2john</span> <span class="file">archive.zip</span> &gt; <span class="file">hash.txt</span>
+        </div>
+        <p>Эта команда извлечет хеш из <code>archive.zip</code> и сохранит его в файл <code>hash.txt</code> для последующего использования с John the Ripper.</p>
+        
+        <h3>1.2 Просмотр хеша в терминале</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">zip2john</span> <span class="file">archive.zip</span>
+        </div>
+        <p>Хеш будет выведен прямо в терминал. Полезно для быстрой проверки содержимого.</p>
+        
+        <h3>1.3 Обработка нескольких ZIP-файлов</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">zip2john</span> <span class="file">archive1.zip archive2.zip</span> &gt; <span class="file">hashes.txt</span>
+        </div>
+        <p>Или с использованием шаблонов:</p>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">zip2john</span> <span class="file">*.zip</span> &gt; <span class="file">hashes.txt</span>
+        </div>
+        
+        <h2>2. Альтернативные вызовы</h2>
+        
+        <div class="note">
+            <p>В некоторых дистрибутивах <code>zip2john</code> может быть скриптом или частью пакета John the Ripper.</p>
+        </div>
+        
+        <h3>2.1 Использование через Python-скрипт</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">python3</span> <span class="path">/usr/share/john/zip2john.py</span> <span class="file">archive.zip</span> &gt; <span class="file">hash.txt</span>
+        </div>
+        
+        <h3>2.2 Прямой вызов из директории John</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="path">/usr/share/john/zip2john</span> <span class="file">archive.zip</span> &gt; <span class="file">hash.txt</span>
+        </div>
+        
+        <h3>2.3 Прямой запуск John the Ripper на ZIP-архив</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">john</span> --format=zip <span class="file">archive.zip</span><br>
+            <span class="terminal">$</span> <span class="command">john</span> --zip=<span class="file">archive.zip</span>
+        </div>
+        
+        <h2>3. Для RAR-архивов</h2>
+        
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">rar2john</span> <span class="file">archive.rar</span> &gt; <span class="file">hash.txt</span>
+        </div>
+        
+        <h2>4. Взлом хеша с помощью John the Ripper</h2>
+        
+        <h3>4.1 Атака по словарю</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">john</span> --wordlist=<span class="path">/usr/share/wordlists/rockyou.txt</span> <span class="file">hash.txt</span>
+        </div>
+        
+        <h3>4.2 Атака по маске</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">john</span> --mask='?l?l?l?l?l?d' <span class="file">hash.txt</span>
+        </div>
+        
+        <h3>4.3 Показать найденные пароли</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">john</span> --show <span class="file">hash.txt</span>
+        </div>
+        
+        <h2>5. Полный рабочий пример</h2>
+        
+        <div class="code-block">
+            <span class="terminal"># Извлекаем хеш из защищенного архива</span><br>
+            <span class="terminal">$</span> <span class="command">zip2john</span> <span class="file">protected.zip</span> &gt; <span class="file">zip_hash.txt</span><br><br>
+            
+            <span class="terminal"># Запускаем атаку по словарю</span><br>
+            <span class="terminal">$</span> <span class="command">john</span> --wordlist=<span class="file">passwords.txt</span> <span class="file">zip_hash.txt</span><br><br>
+            
+            <span class="terminal"># Показываем результаты</span><br>
+            <span class="terminal">$</span> <span class="command">john</span> --show <span class="file">zip_hash.txt</span>
+        </div>
+        
+        <div class="warning">
+            <p><strong>Важное предупреждение:</strong> Используйте эти инструменты только для:</p>
+            <ul>
+                <li>Тестирования безопасности собственных архивов и систем</li>
+                <li>Восстановления забытых паролей к вашим собственным данным</li>
+                <li>Законных пентестов с явного разрешения владельца системы</li>
+            </ul>
+            <p>Незаконное использование криптографических инструментов может повлечь юридическую ответственность.</p>
+        </div>
+        
+        <h2>6. Примечания и устранение проблем</h2>
+        
+        <h3>6.1 Расположение утилит</h3>
+        <p><code>zip2john</code> обычно находится в одном из следующих каталогов:</p>
+        <ul>
+            <li><code>/usr/sbin/</code></li>
+            <li><code>/usr/local/bin/</code></li>
+            <li><code>/usr/share/john/</code></li>
+            <li><code>/opt/john/run/</code></li>
+        </ul>
+        
+        <h3>6.2 Проверка доступности</h3>
+        <div class="code-block">
+            <span class="terminal">$</span> <span class="command">which zip2john</span><br>
+            <span class="terminal">$</span> <span class="command">locate zip2john</span>
+        </div>
+        
+        <h3>6.3 Поддерживаемые методы шифрования</h3>
+        <p><code>zip2john</code> поддерживает различные методы шифрования ZIP, включая:</p>
+        <ul>
+            <li>Традиционный ZipCrypto</li>
+            <li>AES-128 и AES-256</li>
+            <li>Другие распространенные методы сжатия ZIP</li>
+        </ul>
+        
+        <div class="btn-container">
+            <a href="#" class="btn" onclick="saveAsText()">Сохранить как текст</a>
+            <a href="#" class="btn btn-danger" onclick="printPage()">Распечатать руководство</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 Руководство по zip2john | Только для образовательных целей</p>
+        <p>John the Ripper и zip2john являются инструментами с открытым исходным кодом</p>
+    </footer>
+
+    <script>
+        function saveAsText() {
+            const content = document.querySelector('.container').innerText;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'zip2john-guide.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            alert('Руководство сохранено как zip2john-guide.txt');
+        }
+        
+        function printPage() {
+            window.print();
+        }
+        
+        // Подсветка кода при клике
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('click', function() {
+                const selection = window.getSelection();
+                const range = document.createRange();
+                range.selectNodeContents(this);
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                setTimeout(() => {
+                    selection.removeAllRanges();
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
